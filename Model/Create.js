@@ -16,5 +16,5 @@ const Sqlite =require ("./../Connection.js");
     type:Sequelize.TEXT
   }
 });
-Create.sync({force:true});
+//Create.sync({force:true});
 module.exports=Create;
