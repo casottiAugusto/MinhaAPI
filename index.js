@@ -3,12 +3,12 @@ const express = require('express');
 const sqlite = require('./Connection');
 const db = require('./Model/Create');
 const bodyparse = require('body-parser');
-const cros =require("cros");
+const cors =require("cors");
 
 const app = express();
 
 app.use(bodyparse.json());
-app.use(cros);
+app.use(cors);
 
 sqlite.authenticate().then(() => {}).catch((e) => {
 	console.log(e);
