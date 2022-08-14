@@ -11,12 +11,19 @@
 <body>
 
 </body>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
+
+  
+</script>
 <script>
   baseUrl="http://127.0.0.1:8000";
+
+
   axios.get(baseUrl+"/games").then(resquest => {
     console.log(resquest);
   }).catch(err => { console.log(err) })
+
 </script>
+
 
 </html>
