@@ -3,11 +3,12 @@ const express = require('express');
 const sqlite = require('./Connection');
 const db = require('./Model/Create');
 const bodyparse = require('body-parser');
-const { where } = require('Sequelize');
+const cros =require("cros");
 
 const app = express();
 
 app.use(bodyparse.json());
+app.use(cros);
 
 sqlite.authenticate().then(() => {}).catch((e) => {
 	console.log(e);
