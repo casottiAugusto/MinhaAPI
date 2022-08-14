@@ -7,6 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loja de Games </title>
 </head>
+<hr>
+<h4>Loja de Games</h4>
+<ul id="games"></ul>
 
 <body>
 
@@ -21,7 +24,15 @@
 
 
   axios.get(baseUrl+"/games").then(resquest => {
-    console.log(resquest);
+    let game =resquest.data;
+    console.log(game)
+    let lista=document.getElementById("games");
+    game.forEach(games => {
+      let itens=document.createElement('li');
+      itens.innerHTML=`Titulo dos games ${games.title},Ano de saiu${games.ano},Gênero ${games.description}`;
+      lista.appendChild(itens);
+      
+    });
   }).catch(err => { console.log(err) })
 </script>
 
