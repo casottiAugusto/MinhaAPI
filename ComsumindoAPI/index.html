@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loja de Games </title>
+</head>
+
+<body>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  baseUrl="http://127.0.0.1:8000";
+  axios.get(baseUrl+"/games").then(resquest => {
+    console.log(resquest);
+  }).catch(err => { console.log(err) })
+</script>
+
+</html>
