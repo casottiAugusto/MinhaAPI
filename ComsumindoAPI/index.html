@@ -11,7 +11,15 @@
 <h4>Loja de Games</h4>
 <ul id="games"></ul>
 
+
 <body>
+  <hr>
+  <h4>Novo Game</h4>
+  <input type="text" name="title" id="title" placeholder="Titulo"><br>
+  <input type="text" name="estudio" id="estudio" placeholder="Plataormas"><br>
+  <input type="text" name="description" id="description" placeholder="Gênero"><br>
+  <input type="text" name="ano" id="ano" placeholder="Ano"><br>
+  <button type="button" onclick="creategame()">Criar</button>
 
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
@@ -21,11 +29,35 @@
 <script>
 
   baseUrl="http://127.0.0.1:8000";
+  function creategame() 
+  {
+    let titleInput =document.getElementById("title");
+    let estudioInput =document.getElementById("estudio");
+    let descInput =document.getElementById("description");
+    let anoeInput =document.getElementById("ano");
+    let game={
+      title:titleInput.value,
+      estudio:estudioInput.value,
+      description:descInput.value,
+      ano:anoeInput.value
+    }
+    axios.post(baseUrl+"/game",game).then(response=>{
+      if (response.status==200) {
+        alert("Salvo com sucesso !!");
+        location.reload();
+        
+      }
+
+    }).catch(err=>{
+      console.log(err)
+    })
+
+  }
 
 
   axios.get(baseUrl+"/games").then(resquest => {
     let game =resquest.data;
-    console.log(game)
+    
     let lista=document.getElementById("games");
     game.forEach(games => {
       let itens=document.createElement('li');
