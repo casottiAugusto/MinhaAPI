@@ -9,7 +9,9 @@
 </head>
 <hr>
 <h4>Loja de Games</h4>
-<ul id="games"></ul>
+<ul id="games">
+  
+</ul>
 
 
 <body>
@@ -21,6 +23,15 @@
   <input type="text" name="ano" id="ano" placeholder="Ano"><br>
   <button type="button" onclick="creategame()">Criar</button>
 
+  <hr>
+  <h4>Edicao de games</h4>
+  <input type="text" name="idEdit" id="idEdit" placeholder="ID" readonly><br>
+  <input type="text" name="titleEdit" id="titleEdit" placeholder="Titulo"><br>
+  <input type="text" name="estudioEdit" id="estudioEdit" placeholder="Plataormas"><br>
+  <input type="text" name="descriptionEdit" id="descriptionEdit" placeholder="Gênero"><br>
+  <input type="text" name="anoEdt" id="anoEdit" placeholder="Ano"><br>
+  <button type="button" onclick="update()">Editar</button>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
 
@@ -29,6 +40,7 @@
 <script>
 
   baseUrl="http://127.0.0.1:8000";
+ 
   function creategame() 
   {
     let titleInput =document.getElementById("title");
@@ -45,6 +57,7 @@
       if (response.status==200) {
         alert("Salvo com sucesso !!");
         location.reload();
+    
         
       }
 
@@ -52,6 +65,59 @@
       console.log(err)
     })
 
+
+  }
+  function LodForm(ListEdit) {
+    
+    let id =ListEdit.getAttribute("data-id");
+    let title =ListEdit.getAttribute("data-title");
+    let desc =ListEdit.getAttribute("data-description");
+    let estudio =ListEdit.getAttribute("data-estu");
+    let ano =ListEdit.getAttribute("data-ano");
+    document.getElementById('idEdit').value=id;
+    document.getElementById('titleEdit').value=title;
+    document.getElementById('descriptionEdit').value=desc;
+    document.getElementById('estudioEdit').value=estudio;
+   document.getElementById('anoEdit').value=ano;
+ }
+ function update() {
+  let idInput =document.getElementById("idEdit");
+    let titleInput =document.getElementById("titleEdit");
+    let estudioInput =document.getElementById("estudioEdit");
+    let descInput =document.getElementById("descriptionEdit");
+    let anoeInput =document.getElementById("anoEdit");
+    let id= idInput.value;
+    
+    let game={
+      title:titleInput.value,
+      estudio:estudioInput.value,
+      description:descInput.value,
+      ano:anoeInput.value
+    }
+    axios.put(baseUrl+"/game/"+id,game).then(response=>{
+      if (response.status==200) {
+        alert("game Atualizado !!");
+        location.reload();
+    
+        
+      }
+
+    }).catch(err=>{
+      console.log(err)
+    })
+  
+ }
+  function deletegame(listItem) {
+    let id =listItem.getAttribute('data-id')
+    axios.delete(baseUrl+"/game/"+id).then((response)=>{
+      alert("Deletado com sucesso")
+      location.reload();
+
+
+    }).catch((err)=>{
+      console.log(err)
+    })
+    
   }
 
 
@@ -61,11 +127,32 @@
     let lista=document.getElementById("games");
     game.forEach(games => {
       let itens=document.createElement('li');
-      itens.innerHTML=`Titulo dos games ${games.title},Ano de saiu${games.ano},Gênero ${games.description}`;
       lista.appendChild(itens);
+      itens.setAttribute("data-id",games.id);
+      itens.setAttribute("data-title",games.title);
+      itens.setAttribute("data-description",games.description);
+      itens.setAttribute("data-ano",games.ano);
+      itens.setAttribute("data-estu",games.estudio);
+      itens.innerHTML=(`Titulo dos games: ${games.title}, Ano de saiu: ${games.ano}, Gênero: ${games.description}`);
       
+      let deletebnt = document.createElement("button")
+      deletebnt.innerHTML="Deletar";
+      itens.appendChild(deletebnt);
+      deletebnt.addEventListener("click",function () 
+      {
+        deletegame(itens) 
+      })
+      let editBtn =document.createElement("button")
+      editBtn.innerHTML="Editar"
+      itens.appendChild(editBtn)
+      editBtn.addEventListener("click",function(){
+        LodForm(itens)
+      })
     });
+    
   }).catch(err => { console.log(err) })
+
+
 </script>
 
 
