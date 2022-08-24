@@ -7,10 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loja de Games </title>
 </head>
+<h2>
+  <input type="text" name="nome" id="nome"><br>
+  <input type="text" name="senha" id="senha"><br>
+  <button type="submit" onclick="login()">Entrar</button>
+  <button type="submit" id="refresh" onclick="sair()">sair</button>
+</h2>
 <hr>
 <h4>Loja de Games</h4>
 <ul id="games">
-  
+
 </ul>
 
 
@@ -35,121 +41,156 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js">
 
-  
+
 </script>
 <script>
+  baseUrl = "http://127.0.0.1:8000";
 
-  baseUrl="http://127.0.0.1:8000";
- 
-  function creategame() 
-  {
-    let titleInput =document.getElementById("title");
-    let estudioInput =document.getElementById("estudio");
-    let descInput =document.getElementById("description");
-    let anoeInput =document.getElementById("ano");
-    let game={
-      title:titleInput.value,
-      estudio:estudioInput.value,
-      description:descInput.value,
-      ano:anoeInput.value
+
+  function login() {
+    let nomeField = document.querySelector("#nome");
+    let senhadField = document.querySelector("#senha");
+    let nome = nomeField.value;
+    let senha = senhadField.value;
+
+
+    axios.post(baseUrl + "/auth", {
+      nome,
+      senha
+    }).then(res => {
+
+
+      let tokem = res.data.token;
+      localStorage.setItem("token", tokem);
+     
+    }).catch(err => {
+      alert('Errou miseravel')
+    })
+    
+  }
+  const axiosConfig = {
+    headers: {
+      Authorization: " brarer "+localStorage.getItem("token") 
     }
-    axios.post(baseUrl+"/game",game).then(response=>{
-      if (response.status==200) {
+  }
+  function sair() {
+    localStorage.removeItem("token");
+    let btn =document.querySelector("#refresh");
+    btn.addEventListener("click",function(){
+      location.reload()
+    })
+  
+    
+  }
+  
+  
+  function creategame() {
+    let titleInput = document.getElementById("title");
+    let estudioInput = document.getElementById("estudio");
+    let descInput = document.getElementById("description");
+    let anoeInput = document.getElementById("ano");
+    let game = {
+      title: titleInput.value,
+      estudio: estudioInput.value,
+      description: descInput.value,
+      ano: anoeInput.value
+    }
+    axios.post(baseUrl + "/game", game).then(response => {
+      if (response.status == 200) {
         alert("Salvo com sucesso !!");
         location.reload();
-    
-        
+
+
       }
 
-    }).catch(err=>{
+    }).catch(err => {
       console.log(err)
     })
 
 
   }
   function LodForm(ListEdit) {
-    
-    let id =ListEdit.getAttribute("data-id");
-    let title =ListEdit.getAttribute("data-title");
-    let desc =ListEdit.getAttribute("data-description");
-    let estudio =ListEdit.getAttribute("data-estu");
-    let ano =ListEdit.getAttribute("data-ano");
-    document.getElementById('idEdit').value=id;
-    document.getElementById('titleEdit').value=title;
-    document.getElementById('descriptionEdit').value=desc;
-    document.getElementById('estudioEdit').value=estudio;
-   document.getElementById('anoEdit').value=ano;
- }
- function update() {
-  let idInput =document.getElementById("idEdit");
-    let titleInput =document.getElementById("titleEdit");
-    let estudioInput =document.getElementById("estudioEdit");
-    let descInput =document.getElementById("descriptionEdit");
-    let anoeInput =document.getElementById("anoEdit");
-    let id= idInput.value;
-    
-    let game={
-      title:titleInput.value,
-      estudio:estudioInput.value,
-      description:descInput.value,
-      ano:anoeInput.value
+
+    let id = ListEdit.getAttribute("data-id");
+    let title = ListEdit.getAttribute("data-title");
+    let desc = ListEdit.getAttribute("data-description");
+    let estudio = ListEdit.getAttribute("data-estu");
+    let ano = ListEdit.getAttribute("data-ano");
+    document.getElementById('idEdit').value = id;
+    document.getElementById('titleEdit').value = title;
+    document.getElementById('descriptionEdit').value = desc;
+    document.getElementById('estudioEdit').value = estudio;
+    document.getElementById('anoEdit').value = ano;
+  }
+  function update() {
+    let idInput = document.getElementById("idEdit");
+    let titleInput = document.getElementById("titleEdit");
+    let estudioInput = document.getElementById("estudioEdit");
+    let descInput = document.getElementById("descriptionEdit");
+    let anoeInput = document.getElementById("anoEdit");
+    let id = idInput.value;
+
+    let game = {
+      title: titleInput.value,
+      estudio: estudioInput.value,
+      description: descInput.value,
+      ano: anoeInput.value
     }
-    axios.put(baseUrl+"/game/"+id,game).then(response=>{
-      if (response.status==200) {
+    axios.put(baseUrl + "/game/" + id, game).then(response => {
+      if (response.status == 200) {
         alert("game Atualizado !!");
         location.reload();
-    
-        
+
+
       }
 
-    }).catch(err=>{
+    }).catch(err => {
       console.log(err)
     })
-  
- }
+
+  }
   function deletegame(listItem) {
-    let id =listItem.getAttribute('data-id')
-    axios.delete(baseUrl+"/game/"+id).then((response)=>{
+    let id = listItem.getAttribute('data-id')
+    axios.delete(baseUrl + "/game/" + id).then((response) => {
       alert("Deletado com sucesso")
       location.reload();
 
 
-    }).catch((err)=>{
+    }).catch((err) => {
       console.log(err)
     })
-    
+
   }
 
 
-  axios.get(baseUrl+"/games").then(resquest => {
-    let game =resquest.data;
-    
-    let lista=document.getElementById("games");
+  axios.get(baseUrl + "/games", axiosConfig).then(resquest => {
+    let game = resquest.data;
+
+    let lista = document.getElementById("games");
     game.forEach(games => {
-      let itens=document.createElement('li');
+      let itens = document.createElement('li');
       lista.appendChild(itens);
-      itens.setAttribute("data-id",games.id);
-      itens.setAttribute("data-title",games.title);
-      itens.setAttribute("data-description",games.description);
-      itens.setAttribute("data-ano",games.ano);
-      itens.setAttribute("data-estu",games.estudio);
-      itens.innerHTML=(`Titulo dos games: ${games.title}, Ano de saiu: ${games.ano}, Gênero: ${games.description}`);
-      
+      itens.setAttribute("data-id", games.id);
+      itens.setAttribute("data-title", games.title);
+      itens.setAttribute("data-description", games.description);
+      itens.setAttribute("data-ano", games.ano);
+      itens.setAttribute("data-estu", games.estudio);
+      itens.innerHTML = (`Titulo dos games: ${games.title}, Ano de saiu: ${games.ano}, Gênero: ${games.description}`);
+
       let deletebnt = document.createElement("button")
-      deletebnt.innerHTML="Deletar";
+      deletebnt.innerHTML = "Deletar";
       itens.appendChild(deletebnt);
-      deletebnt.addEventListener("click",function () 
-      {
-        deletegame(itens) 
+      deletebnt.addEventListener("click", function () {
+        deletegame(itens)
       })
-      let editBtn =document.createElement("button")
-      editBtn.innerHTML="Editar"
+      let editBtn = document.createElement("button")
+      editBtn.innerHTML = "Editar"
       itens.appendChild(editBtn)
-      editBtn.addEventListener("click",function(){
+      editBtn.addEventListener("click", function () {
         LodForm(itens)
       })
     });
-    
+
   }).catch(err => { console.log(err) })
 
 
